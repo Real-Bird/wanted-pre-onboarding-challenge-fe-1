@@ -11,7 +11,7 @@ const TodoItem = ({ todo }) => {
   const { id, title, content } = todo;
   return (
     <ItemWrapper>
-      <Link to={`/${id}`}>
+      <Link to={`/todo/${id}`}>
         <div className="text">{title}</div>
       </Link>
     </ItemWrapper>

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -20,8 +21,9 @@ const ValidBtn = styled.button`
 
 const ToggleBtn = styled(ValidBtn)``;
 
-const LoginForm = () => {
+const LoginForm = ({ token }) => {
   const [toggleForm, setToggleForm] = useState(false);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -44,11 +46,13 @@ const LoginForm = () => {
     }
 
     if (data.message) {
-      alert(data.message);
       localStorage.setItem("token", data.token);
-      return;
+      navigate("/");
     }
   };
+  useEffect(() => {
+    if (token) navigate("/");
+  }, [token]);
   const onToggleForm = () => setToggleForm((prev) => !prev);
   return (
     <Wrapper>

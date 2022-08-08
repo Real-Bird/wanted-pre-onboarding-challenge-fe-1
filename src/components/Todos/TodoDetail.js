@@ -31,7 +31,7 @@ const TodoDetail = ({ token }) => {
   const [toggleUpdating, setToggleUpdating] = useState(false);
   const {
     params: { id },
-  } = useMatch(":id");
+  } = useMatch("/todo/:id");
   useEffect(() => {
     getTodoById();
   }, [token, id]);
@@ -51,6 +51,7 @@ const TodoDetail = ({ token }) => {
         headers: { "Content-Type": "application/json", Authorization: token },
       })
     ).json();
+    if (!data) return navigate("/todo");
     setTodoDetail(data);
   };
 
@@ -72,7 +73,7 @@ const TodoDetail = ({ token }) => {
         Authorization: token,
       },
     });
-    navigate("/");
+    navigate("/todo");
   };
   return (
     <ItemWrapper>

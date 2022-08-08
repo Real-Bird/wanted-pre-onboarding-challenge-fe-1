@@ -9,10 +9,10 @@ const LoginBox = styled.div`
   margin: 4rem auto;
 `;
 
-const Auth = () => {
+const Auth = ({ token }) => {
   return (
     <LoginBox>
-      <LoginForm />
+      <LoginForm token={token} />
     </LoginBox>
   );
 };
