@@ -44,6 +44,7 @@ const LoginForm = ({ token }) => {
 
     if (data.details) {
       alert(data.details);
+      if (toggleForm) setToggleForm((prev) => !prev);
     }
 
     if (data.message) {
