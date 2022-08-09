@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import TodoList from "./TodoList";
@@ -12,13 +12,14 @@ const Container = styled.div`
 `;
 
 const TodosHome = ({ token }) => {
+  const [logout, setLogout] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    if (!token) navigate("/");
-  }, [token]);
+    if (logout) navigate("/login");
+  }, [logout]);
   const onLogout = () => {
     localStorage.removeItem("token");
-    navigate("/");
+    setLogout(true);
   };
   return (
     <Container>

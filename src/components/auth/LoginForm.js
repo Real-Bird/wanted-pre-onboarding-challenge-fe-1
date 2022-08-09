@@ -23,6 +23,7 @@ const ToggleBtn = styled(ValidBtn)``;
 
 const LoginForm = ({ token }) => {
   const [toggleForm, setToggleForm] = useState(false);
+  const [isLogged, setIsLogged] = useState(false);
   const navigate = useNavigate();
   const {
     register,
@@ -47,12 +48,12 @@ const LoginForm = ({ token }) => {
 
     if (data.message) {
       localStorage.setItem("token", data.token);
-      navigate("/");
+      setIsLogged(true);
     }
   };
   useEffect(() => {
-    if (token) navigate("/");
-  }, [token]);
+    if (isLogged) navigate("/todo");
+  }, [isLogged]);
   const onToggleForm = () => setToggleForm((prev) => !prev);
   return (
     <Wrapper>

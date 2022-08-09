@@ -8,7 +8,7 @@ const ItemWrapper = styled.div`
 `;
 
 const TodoItem = ({ todo }) => {
-  const { id, title, content } = todo;
+  const { id, title } = todo;
   return (
     <ItemWrapper>
       <Link to={`/todo/${id}`}>
