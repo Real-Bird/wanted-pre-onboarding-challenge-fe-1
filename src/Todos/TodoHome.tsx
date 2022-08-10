@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getTodos } from "../libs/todos";
+import { getToken } from "../libs/users";
 import TodoList from "./TodoList";
 
 const Container = styled.div`
@@ -20,10 +21,14 @@ export interface TodosResponse {
   [key: string]: string;
 }
 
-const TodosHome = ({ token }: Token) => {
+const TodosHome = () => {
   const [logout, setLogout] = useState(false);
+  const [token, setToken] = useState<string>("");
   const navigate = useNavigate();
   const [todoList, setTodoList] = useState<TodosResponse[]>([]);
+  useEffect(() => {
+    setToken(getToken("token"));
+  }, []);
   useEffect(() => {
     if (token) {
       const res = getTodos(token);

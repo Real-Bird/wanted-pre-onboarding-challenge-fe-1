@@ -15,9 +15,9 @@ const AppRouter = () => {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Home token={token} />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Auth />} />
-          <Route path="/todo" element={<TodosHome token={token} />} />
+          <Route path="/todo" element={<TodosHome />} />
           <Route path="/todo/:id" element={<TodoDetail token={token} />} />
         </Routes>
       </Router>
