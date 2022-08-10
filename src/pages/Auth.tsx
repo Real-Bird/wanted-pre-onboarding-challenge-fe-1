@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import LoginForm from "./LoginForm";
+import LoginForm from "../Login/LoginForm";
+import { Token } from "../Todos/TodoHome";
 
 const LoginBox = styled.div`
   display: flex;
@@ -9,10 +10,10 @@ const LoginBox = styled.div`
   margin: 4rem auto;
 `;
 
-const Auth = ({ token }) => {
+const Auth = () => {
   return (
     <LoginBox>
-      <LoginForm token={token} />
+      <LoginForm />
     </LoginBox>
   );
 };

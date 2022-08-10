@@ -1,18 +1,9 @@
-import { useEffect, useState } from "react";
-import AppRouter from "./components/Router";
+import AppRouter from "./Router";
 
 function App() {
-  const [loginToken, setLoginToken] = useState(localStorage.getItem("token"));
-  useEffect(() => {
-    if (loginToken) {
-      setLoginToken(localStorage.getItem("token"));
-    } else {
-      setLoginToken(null);
-    }
-  }, [loginToken]);
   return (
     <>
-      <AppRouter isLogged={Boolean(loginToken)} token={loginToken} />
+      <AppRouter />
     </>
   );
 }

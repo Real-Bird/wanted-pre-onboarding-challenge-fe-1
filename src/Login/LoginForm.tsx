@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { getLogin } from "../libs/users";
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,7 +22,12 @@ const ValidBtn = styled.button`
 
 const ToggleBtn = styled(ValidBtn)``;
 
-const LoginForm = ({ token }) => {
+interface FormProps {
+  email: string;
+  password: string;
+}
+
+const LoginForm = () => {
   const [toggleForm, setToggleForm] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const navigate = useNavigate();
@@ -29,28 +35,15 @@ const LoginForm = ({ token }) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const onValid = async ({ email, password }) => {
-    const data = await (
-      await fetch(
-        `http://localhost:8080/users/${toggleForm ? "create" : "login"}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      )
-    ).json();
-
-    if (data.details) {
-      alert(data.details);
-      if (toggleForm) setToggleForm((prev) => !prev);
+  } = useForm<FormProps>();
+  const onValid = async ({ email, password }: FormProps) => {
+    const { data, ok } = await getLogin(email, password, toggleForm);
+    if (!ok) {
+      setIsLogged(ok);
+      alert(data.message);
+      return;
     }
-
-    if (data.message) {
-      localStorage.setItem("token", data.token);
-      setIsLogged(true);
-    }
+    setIsLogged(ok);
   };
   useEffect(() => {
     if (isLogged) navigate("/todo");

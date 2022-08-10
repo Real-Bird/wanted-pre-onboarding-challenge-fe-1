@@ -1,5 +1,7 @@
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import { setTodo } from "../libs/todos";
+import { Token } from "./TodoHome";
 
 const FormBox = styled.form`
   display: flex;
@@ -12,21 +14,16 @@ const ValidBtn = styled.button`
   margin: 10px auto;
 `;
 
-const TodoInsert = ({ token }) => {
-  const { register, handleSubmit, reset } = useForm();
-  const onValid = ({ title, content }) => {
-    setTodo(title, content);
+export interface TodoForm {
+  title: string;
+  content: string;
+}
+
+const TodoInsert = ({ token }: Token) => {
+  const { register, handleSubmit, reset } = useForm<TodoForm>();
+  const onValid = ({ title, content }: TodoForm) => {
+    setTodo(title, content, token);
     reset();
-  };
-  const setTodo = async (title, content) => {
-    const data = await fetch(`http://localhost:8080/todos`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-      body: JSON.stringify({ title, content }),
-    });
   };
   return (
     <div className="TodoListItem">
