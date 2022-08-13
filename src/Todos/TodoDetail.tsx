@@ -1,92 +1,96 @@
 import styled from "styled-components";
-import { useMatch, useNavigate } from "react-router-dom";
+import { useMatch, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TodoForm } from "./TodoInsert";
 import { deleteTodo, getTodoById, updateTodo } from "../libs/todos";
-import { Token } from "./TodoHome";
-
-const ItemWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const FormBox = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const ValidBtn = styled.button`
-  width: 120px;
-  height: 40px;
-  margin: 10px auto;
-`;
+import { TodosResponse, Token } from "./TodoHome";
+import {
+  FormBox,
+  DetailWrapper,
+  OverviewItem,
+  Subtitle,
+  ValidBtn,
+  LabelBox,
+} from "../components/todosStyled";
 
 const Label = styled.label`
   font-size: 32px;
 `;
 
-interface TodoResponse {
-  [key: string]: string;
-}
-
 const TodoDetail = ({ token }: Token) => {
   const navigate = useNavigate();
-  const [todoDetail, setTodoDetail] = useState<TodoResponse>({});
+  const [todoDetail, setTodoDetail] = useState<TodosResponse>();
   const [toggleUpdating, setToggleUpdating] = useState(false);
   const { register, handleSubmit, reset } = useForm<TodoForm>();
-
   const onValid = ({ title, content }: TodoForm) => {
-    updateTodo(title, content, params?.params.id, token);
-    reset();
-    setToggleUpdating((prev) => false);
+    if (!title || !content) return;
+    if (window.confirm("수정하시겠습니까?")) {
+      updateTodo(title, content, `${params?.params.id}`, token);
+      reset();
+      setToggleUpdating(false);
+    }
   };
   const params = useMatch("/todo/:id");
   useEffect(() => {
     if (token) {
-      getTodoById(params?.params.id, token).then((res) =>
+      getTodoById(`${params?.params.id}`, token).then((res) =>
         setTodoDetail(res.data)
       );
     }
   }, [token, params, todoDetail]);
   const onDeleteTodo = () => {
     if (window.confirm("정말 지우시겠습니까?")) {
-      deleteTodo(params?.params.id, token);
+      deleteTodo(`${params?.params.id}`, token);
       navigate("/todo");
     }
   };
   return (
-    <ItemWrapper>
+    <DetailWrapper>
       {toggleUpdating ? (
         <FormBox onSubmit={handleSubmit(onValid)}>
-          <Label htmlFor="title">Title</Label>
-          <input {...register("title")} id="title" type="text" />
-          <Label htmlFor="title">Content</Label>
-          <input {...register("content")} id="content" type="text" />
-          <ValidBtn type="submit">Update</ValidBtn>
-          <ValidBtn onClick={() => setToggleUpdating((prev) => !prev)}>
-            Cancel
-          </ValidBtn>
+          <LabelBox>
+            <input {...register("title")} id="title" type="text" />
+            <span className="bar"></span>
+            <label htmlFor="title">TITLE</label>
+          </LabelBox>
+          <LabelBox>
+            <input {...register("content")} id="content" type="text" />
+            <span className="bar"></span>
+            <label htmlFor="content">CONTENT</label>
+          </LabelBox>
+          <div>
+            <ValidBtn toggleUpdating={true} type="submit">
+              Update
+            </ValidBtn>
+            <ValidBtn onClick={() => setToggleUpdating((prev) => !prev)}>
+              Cancel
+            </ValidBtn>
+          </div>
         </FormBox>
       ) : (
         <FormBox as="div">
+          <OverviewItem>
+            <Subtitle>
+              <span>TITLE : </span>
+              <span>{todoDetail?.title}</span>
+            </Subtitle>
+          </OverviewItem>
+          <OverviewItem>
+            <Subtitle>
+              <span>CONTENT : </span>
+              <span>{todoDetail?.content}</span>
+            </Subtitle>
+          </OverviewItem>
           <div>
-            <h1>Title</h1>
-            <span>{todoDetail?.title}</span>
+            <ValidBtn onClick={() => setToggleUpdating((prev) => !prev)}>
+              Update
+            </ValidBtn>
+            <ValidBtn onClick={onDeleteTodo}>Delete</ValidBtn>
           </div>
-          <div>
-            <h3>Content</h3>
-            <span>{todoDetail?.content}</span>
-          </div>
-          <ValidBtn onClick={() => setToggleUpdating((prev) => !prev)}>
-            Update
-          </ValidBtn>
-          <ValidBtn onClick={onDeleteTodo}>Delete</ValidBtn>
         </FormBox>
       )}
-    </ItemWrapper>
+    </DetailWrapper>
   );
 };
 

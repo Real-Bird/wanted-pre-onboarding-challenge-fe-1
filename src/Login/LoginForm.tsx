@@ -2,25 +2,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Input from "../components/input";
+import { FormBox, Overview, Title, ValidBtn } from "../components/todosStyled";
 import { getLogin } from "../libs/users";
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const FormBox = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const ValidBtn = styled.button`
-  width: 120px;
-  height: 40px;
-  margin: 10px auto;
-`;
-
-const ToggleBtn = styled(ValidBtn)``;
 
 interface FormProps {
   email: string;
@@ -50,12 +34,11 @@ const LoginForm = () => {
   }, [isLogged]);
   const onToggleForm = () => setToggleForm((prev) => !prev);
   return (
-    <Wrapper>
-      <h1>{toggleForm ? "Sign Up" : "Log In"}</h1>
+    <Overview>
+      <Title>{toggleForm ? "Sign Up" : "Log In"}</Title>
       <FormBox onSubmit={handleSubmit(onValid)}>
-        <label htmlFor="email">Email</label>
-        <input
-          {...register("email", {
+        <Input
+          register={register("email", {
             required: "이메일은 필수입니다.",
             pattern: {
               value:
@@ -63,29 +46,30 @@ const LoginForm = () => {
               message: "올바른 메일 양식이 아닙니다.",
             },
           })}
+          inputName="email"
           type="email"
-          id="email"
+          label="Email"
+          error={errors.email ? errors.email?.message : ""}
         />
-        {errors.email && <span>{errors.email?.message}</span>}
-        <label htmlFor="password">Password</label>
-        <input
-          {...register("password", {
-            required: true,
+        <Input
+          register={register("password", {
+            required: "비밀번호는 필수입니다.",
             pattern: {
               value: /^[0-9a-zA-Z]{8,}/g,
               message: "비밀번호는 8자 이상입니다.",
             },
           })}
+          inputName="password"
           type="password"
-          id="password"
+          label="Password"
+          error={errors.password ? errors.password?.message : ""}
         />
-        {errors.password && <span>{errors.password?.message}</span>}
         <ValidBtn type="submit">{toggleForm ? "Sign up" : "Log in"}</ValidBtn>
       </FormBox>
-      <ToggleBtn onClick={onToggleForm}>
+      <ValidBtn toggleUpdating={toggleForm} onClick={onToggleForm}>
         {toggleForm ? "Go to Log In" : "Go to Sign Up"}
-      </ToggleBtn>
-    </Wrapper>
+      </ValidBtn>
+    </Overview>
   );
 };
 

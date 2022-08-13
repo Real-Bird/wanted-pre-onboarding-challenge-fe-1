@@ -1,24 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import {
+  Container,
+  Header,
+  Overview,
+  Title,
+  ValidBtn,
+} from "../components/todosStyled";
 import { getTodos } from "../libs/todos";
 import { getToken } from "../libs/users";
+import TodoDetail from "./TodoDetail";
+import TodoInsert from "./TodoInsert";
 import TodoList from "./TodoList";
-
-const Container = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
 
 export interface Token {
   token: string;
 }
 
 export interface TodosResponse {
-  [key: string]: string;
+  content: string;
+  createdAt: string;
+  id: string;
+  title: string;
+  updatedAt: string;
 }
 
 const TodosHome = () => {
@@ -46,9 +50,18 @@ const TodosHome = () => {
   };
   return (
     <Container>
-      <h1>Todo List</h1>
-      <TodoList token={token} todoList={todoList} />
-      <button onClick={onLogout}>Log out</button>
+      <Overview>
+        <Title>Todo List</Title>
+        <TodoList token={token} todoList={todoList} />
+        <TodoInsert token={token} />
+        <ValidBtn onClick={onLogout}>Log out</ValidBtn>
+      </Overview>
+      <Overview>
+        <Title>Todo Detail</Title>
+        <Routes>
+          <Route path=":id" element={<TodoDetail token={token} />} />
+        </Routes>
+      </Overview>
     </Container>
   );
 };

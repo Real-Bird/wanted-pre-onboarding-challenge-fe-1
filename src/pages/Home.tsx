@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
-import { hasToken } from "../libs/users";
-import TodosHome, { Token } from "../Todos/TodoHome";
-import Auth from "./Auth";
+import { Navigate } from "react-router-dom";
+import { Token } from "../Todos/TodoHome";
 
-export default function Home() {
-  const [isLogged, setIsLogged] = useState(false);
-  useEffect(() => {
-    const isToken = hasToken("token");
-    setIsLogged(isToken);
-  }, [isLogged]);
-  return <div>{isLogged ? <TodosHome /> : <Auth />}</div>;
+export default function Home({ token }: Token) {
+  return (
+    <>
+      {token ? (
+        <Navigate to="/todo" replace={true} />
+      ) : (
+        <Navigate to="/login" replace={true} />
+      )}
+    </>
+  );
 }
