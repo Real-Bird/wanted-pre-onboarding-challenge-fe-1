@@ -31,6 +31,19 @@ export const Overview = styled.div`
   border-radius: 10px;
 `;
 
+export const ToDoListOverview = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: ${(props) => props.theme.overviewBgColor};
+  padding: 10px 20px;
+  border-radius: 10px;
+`;
+
+export const ToDoDetailOverview = styled(ToDoListOverview)`
+  max-height: 20rem;
+`;
+
 export const TodoItemWrapper = styled.ul`
   width: 100%;
 `;
@@ -92,7 +105,6 @@ export const Subtitle = styled.div`
   span:last-child {
     font-size: 1.6rem;
     font-weight: 400;
-    text-transform: uppercase;
     margin-bottom: 5px;
   }
 `;

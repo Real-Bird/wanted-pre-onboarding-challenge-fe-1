@@ -1,10 +1,10 @@
 import styled from "styled-components";
-import { useMatch, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useMatch, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { TodoForm } from "./TodoInsert";
 import { deleteTodo, getTodoById, updateTodo } from "../libs/todos";
-import { TodosResponse, Token } from "./TodoHome";
+import { TodosResponse } from "./TodoHome";
 import {
   FormBox,
   DetailWrapper,
@@ -13,35 +13,44 @@ import {
   ValidBtn,
   LabelBox,
 } from "../components/todosStyled";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-const Label = styled.label`
-  font-size: 32px;
-`;
+interface IToDoById {
+  [key: string]: TodosResponse;
+}
 
-const TodoDetail = ({ token }: Token) => {
+const TodoDetail = () => {
   const navigate = useNavigate();
-  const [todoDetail, setTodoDetail] = useState<TodosResponse>();
+  const params = useMatch("/todo/:id");
+  const queryClient = useQueryClient();
+  const updateMutation = useMutation(
+    ({ title, content }: TodoForm) =>
+      updateTodo(title, content, `${params?.params.id}`),
+    {
+      onSuccess: (data) => queryClient.invalidateQueries(["toDos"]),
+      onError: (err) => console.log(err, "something wrong"),
+    }
+  );
+  const deleteMutation = useMutation((id: string) => deleteTodo(id), {
+    onSuccess: (data) => queryClient.invalidateQueries(["toDos"]),
+    onError: (err) => console.log(err, "something wrong"),
+  });
+  const { isLoading, data: toDo } = useQuery<IToDoById>(["toDoById"], () =>
+    getTodoById(`${params?.params.id}`)
+  );
   const [toggleUpdating, setToggleUpdating] = useState(false);
   const { register, handleSubmit, reset } = useForm<TodoForm>();
   const onValid = ({ title, content }: TodoForm) => {
     if (!title || !content) return;
     if (window.confirm("수정하시겠습니까?")) {
-      updateTodo(title, content, `${params?.params.id}`, token);
+      updateMutation.mutate({ title, content });
       reset();
       setToggleUpdating(false);
     }
   };
-  const params = useMatch("/todo/:id");
-  useEffect(() => {
-    if (token) {
-      getTodoById(`${params?.params.id}`, token).then((res) =>
-        setTodoDetail(res.data)
-      );
-    }
-  }, [token, params, todoDetail]);
   const onDeleteTodo = () => {
     if (window.confirm("정말 지우시겠습니까?")) {
-      deleteTodo(`${params?.params.id}`, token);
+      deleteMutation.mutate(`${params?.params.id}`);
       navigate("/todo");
     }
   };
@@ -73,13 +82,13 @@ const TodoDetail = ({ token }: Token) => {
           <OverviewItem>
             <Subtitle>
               <span>TITLE : </span>
-              <span>{todoDetail?.title}</span>
+              <span>{toDo?.data.title}</span>
             </Subtitle>
           </OverviewItem>
           <OverviewItem>
             <Subtitle>
               <span>CONTENT : </span>
-              <span>{todoDetail?.content}</span>
+              <span>{toDo?.data.content}</span>
             </Subtitle>
           </OverviewItem>
           <div>

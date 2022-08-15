@@ -1,25 +1,32 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import styled from "styled-components";
 import Input from "../components/input";
 import {
   FormBox,
-  LabelBox,
   TodoInsertWrapper,
   ValidBtn,
 } from "../components/todosStyled";
 import { setTodo } from "../libs/todos";
-import { Token } from "./TodoHome";
 
 export interface TodoForm {
   title: string;
   content: string;
 }
 
-const TodoInsert = ({ token }: Token) => {
+const TodoInsert = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation(
+    ({ title, content }: TodoForm) => setTodo(title, content),
+    {
+      onSuccess: (data) => queryClient.invalidateQueries(["toDos"]),
+      onError: (err) => console.log(err, "something wrong"),
+    }
+  );
   const { register, handleSubmit, reset } = useForm<TodoForm>();
   const onValid = ({ title, content }: TodoForm) => {
     if (!title || !content) return;
-    setTodo(title, content, token);
+    // setTodo(title, content, token);
+    mutation.mutate({ title, content });
     reset();
   };
   return (

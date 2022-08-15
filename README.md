@@ -1,5 +1,10 @@
 # Refactoring 진행 사항
 
+## 22-08-15
+
+- `To Do List`에 `React Query`를 적용했습니다.
+- 코드 정리 예정입니다.
+
 ## 22-08-13
 
 - `Routes`를 수정했습니다.

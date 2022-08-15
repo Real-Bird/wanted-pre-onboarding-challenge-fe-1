@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import {
   Container,
-  Header,
-  Overview,
   Title,
+  ToDoDetailOverview,
+  ToDoListOverview,
   ValidBtn,
 } from "../components/todosStyled";
-import { getTodos } from "../libs/todos";
 import { getToken } from "../libs/users";
 import TodoDetail from "./TodoDetail";
 import TodoInsert from "./TodoInsert";
@@ -29,16 +28,9 @@ const TodosHome = () => {
   const [logout, setLogout] = useState(false);
   const [token, setToken] = useState<string>("");
   const navigate = useNavigate();
-  const [todoList, setTodoList] = useState<TodosResponse[]>([]);
   useEffect(() => {
     setToken(getToken("token"));
   }, []);
-  useEffect(() => {
-    if (token) {
-      const res = getTodos(token);
-      res.then((response) => setTodoList(response));
-    }
-  }, [todoList, token, navigate]);
   useEffect(() => {
     if (logout) navigate("/login");
   }, [logout]);
@@ -50,18 +42,18 @@ const TodosHome = () => {
   };
   return (
     <Container>
-      <Overview>
+      <ToDoListOverview>
         <Title>Todo List</Title>
-        <TodoList token={token} todoList={todoList} />
-        <TodoInsert token={token} />
+        <TodoList />
+        <TodoInsert />
         <ValidBtn onClick={onLogout}>Log out</ValidBtn>
-      </Overview>
-      <Overview>
+      </ToDoListOverview>
+      <ToDoDetailOverview>
         <Title>Todo Detail</Title>
         <Routes>
-          <Route path=":id" element={<TodoDetail token={token} />} />
+          <Route path=":id" element={<TodoDetail />} />
         </Routes>
-      </Overview>
+      </ToDoDetailOverview>
     </Container>
   );
 };

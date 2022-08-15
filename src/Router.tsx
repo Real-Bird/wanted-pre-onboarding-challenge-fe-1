@@ -6,10 +6,10 @@ import {
   Routes,
   useLocation,
 } from "react-router-dom";
-import { getToken, hasToken } from "./libs/users";
+import NotFound from "./404";
+import { hasToken } from "./libs/users";
 import Auth from "./pages/Auth";
 import Home from "./pages/Home";
-import TodoDetail from "./Todos/TodoDetail";
 import TodosHome from "./Todos/TodoHome";
 
 const AppRouter = () => {
@@ -22,7 +22,14 @@ const AppRouter = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home token={`${token}`} />} />
-          <Route path="login" element={<Auth />} />
+          <Route
+            path="login"
+            element={
+              <HasAuth>
+                <Auth />
+              </HasAuth>
+            }
+          />
           <Route
             path="todo/*"
             element={
@@ -31,6 +38,7 @@ const AppRouter = () => {
               </RequireAuth>
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </>
@@ -40,15 +48,22 @@ const AppRouter = () => {
 export default AppRouter;
 
 function RequireAuth({ children }: { children: JSX.Element }) {
-  let auth = hasToken("token");
-  let location = useLocation();
+  const auth = hasToken("token");
+  const location = useLocation();
 
   if (!auth) {
-    // Redirect them to the /login page, but save the current location they were
-    // trying to go to when they were redirected. This allows us to send them
-    // along to that page after they login, which is a nicer user experience
-    // than dropping them off on the home page.
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  return children;
+}
+
+function HasAuth({ children }: { children: JSX.Element }) {
+  const auth = hasToken("token");
+  const location = useLocation();
+
+  if (auth) {
+    return <Navigate to="/todo" state={{ from: location }} replace />;
   }
 
   return children;
