@@ -169,19 +169,103 @@ npm start
 
 `styled components`로 구성한 컴포넌트를 `components` 디렉토리로 분류해 재사용성을 높였다. [#커밋](https://github.com/Real-Bird/wanted-pre-onboarding-challenge-fe-1/commit/6262bbdf73069af8665af5a54ea5103c9c4a5686)
 
-### 5-2. 강의 2회 차 과제
+### 5-2. 강의 2회 차 과제 - Redux 컨셉 학습 및 `createStore` 최소 구현, React Query 적용
 
-### 5-3. 강의 3회 차 과제
+#### 5-2-1. 디렉토리 구조
 
-<!-- ## Refactoring 진행 사항
+```bash
+· 📂src
+   ├─ 📂Login
+   │   └─ 💾LoginForm.tsx
+   ├─ 📂Todos
+   │   ├─ 💾TodoDetail.tsx
+   │   ├─ 💾TodoHome.tsx
+   │   ├─ 💾TodoInsert.tsx
+   │   └─ 💾TodoList.tsx
+   ├─ 📂components
+   │   ├─ 💾globalStyled.ts
+   │   ├─ 💾input.tsx
+   │   └─ 💾todosStyled.ts
+   ├─ 📂libs
+   │   ├─ 💾theme.ts
+   │   ├─ 💾todos.ts
+   │   ├─ 💾users.ts
+   │   └─ 💾utils.ts
+   ├─ 📂pages
+   │   ├─ 💾Auth.tsx
+   │   └─ 💾Home.tsx
+   ├─ 💾404.tsx
+   ├─ 💾App.tsx
+   ├─ 💾Router.tsx
+   ├─ 💾index.css
+   ├─ 💾index.tsx
+   ├─ 💾react-app-env.d.ts
+   └─ 💾styled.d.ts
+```
 
-## 22-08-15
+#### 5-2-2. 셀프 피드백
 
-- `To Do List`에 `React Query`를 적용했습니다.
-- 코드 정리 예정입니다.
+`404` 페이지를 추가하고, `token` 여부에 따라 페이지를 보호했다. [커밋](https://github.com/Real-Bird/wanted-pre-onboarding-challenge-fe-1/blob/e182930f2b7f78eb3be7d265edf5c6e20f2a73a4/src/Router.tsx)
 
-## 22-08-13
+2회 차 과제는 엉망진창이었다. 먼저, `Redux` 컨셉을 학습하고 `createStore`의 최소 구현체를 어떻게 작성해야 하는지 제대로 이해하지 못했다.
 
-- `Routes`를 수정했습니다.
-  - `Nested Route`로 구성해 `URL`은 `Todo ID`를 포함하되 페이지 이동은 하지 않습니다.
-- `styles`을 추가했습니다. -->
+느낌만 풀어보자면, `props/state`를 컴포넌트로 전달하면 매번 상태가 변한다. `React`는 `props/state`가 지나간 컴포넌트의 개수만큼 `re-rendering`을 진행하기 때문에 불필요한 `re-rendering`이 발생한다. 따라서 `props/state`가 필요한 부분에서만 호출할 수 있도록 `Store`라는 장소에 그것을 저장해둔다.
+
+변화가 필요한 `props/state`는 `Action`이라는 트리거를 담은 `reducer`를 `Dispatcher`에 보내 내부에서 변경되어 리턴된다.
+
+이런 느낌으로 나름의 의사코드를 작성했다.
+
+```javascript
+export function createStore(
+  reducer: (상태, 행동들fn) => 변한상태,
+  미리적재된상태
+) {
+  let currentReducer = reducer;
+  let 현재상태 = 미리적재된상태 | null;
+  let 현재리스너 = [];
+  let 다음리스너 = 현재리스너;
+
+  function dispatch(행동: 행동) {
+    현재상태 = currentReducer(현재상태, 행동);
+    return 행동;
+  }
+
+  function getState() {
+    return 현재상태;
+  }
+
+  function subscribe(리스너: 행동) {
+    다음리스너.push(리스너);
+
+    let 구독중 = true;
+
+    return function unsubscribe() {
+      if (!구독중) {
+        return;
+      }
+      구독중 = false;
+
+      const index = 다음리스너.indexOf(리스너);
+      다음리스너.splice(index, 1);
+      현재리스너 = null;
+    };
+  }
+
+  const 저장소 = {
+    dispatch,
+    getState,
+    subscribe,
+  };
+  return 저장소;
+}
+```
+
+그러나 여기서 `리스너`와 `subscribe`의 역할을 이해하지 못해 `scratch` 코드로 구현하지 못했다.
+
+`React Query`의 적용 또한 난제였다. `useQuery`를 통한 상태 저장/호출은 수월했으나 `useMutation`을 적용하지 못하고 포기했었다. 다음 날, 갑작스레 흐름이 이해되면서 공식 문서가 읽혔다. 신기한 경험에 전율하며 기본적인 `React Query`를 적용할 수 있었다. [커밋](https://github.com/Real-Bird/wanted-pre-onboarding-challenge-fe-1/commit/e182930f2b7f78eb3be7d265edf5c6e20f2a73a4)
+
+`To Do` 컴포넌트는 변화가 잦으므로 `React Query`를 사용했고, `Login` 컴포넌트는 단회성이어서 `fetch`를 그대로 사용했다.
+
+비동기 함수를 각 역할에 따라 `todos.ts`와 `users.ts`에 몰아 넣어두었고, 커스텀 훅은 만들지 않았다. 꼭 세분화하여 분리해야 하는가?
+
+### 5-3. 강의 3회 차 과제 - README 작성 및 코드 정리, '개발자로서의 나' 특징 정의해보기
