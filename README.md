@@ -10,13 +10,29 @@
 
 ## 1. 최종 구현 상세 [맨 위로](#목차)
 
-### 1-1. Auth (Log In / Sign Up)
+### 1-1. Auth
 
-> `/auth` 이미지가 들어갈 예정
+#### 1-1-1. Login / Signup
+
+[login/signup](https://user-images.githubusercontent.com/83404864/185549010-3feb5d33-7e29-47f9-bf8b-957db5507b13.webm)
+
+#### 1-1-2. Logout
+
+[logout](https://user-images.githubusercontent.com/83404864/185552775-5159e3ef-d870-4c45-afa7-7b2031fe9784.webm)
 
 ### 1-2. To Do List
 
-> `/todos/*` 이미지가 들어갈 예정
+#### 1-2-1. Insert ToDos
+
+[insert todo](https://user-images.githubusercontent.com/83404864/185552914-1173e991-ccb4-439a-8bf4-09c4439ac79e.webm)
+
+#### 1-2-2. Update ToDos
+
+[update todo](https://user-images.githubusercontent.com/83404864/185552950-cfb2e21d-2cbe-415a-84e7-e62486d11c11.webm)
+
+#### 1-2-3. Delete ToDos
+
+[delete todo](https://user-images.githubusercontent.com/83404864/185552997-a6fd754f-9e8f-42fd-b536-d51fa25bc024.webm)
 
 ## 2. 설치 및 실행 [맨 위로](#목차)
 
