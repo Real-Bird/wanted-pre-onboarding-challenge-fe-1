@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import { Link, useMatch } from "react-router-dom";
 import {
   TodoItem,
@@ -38,4 +39,4 @@ const TodoList = () => {
   );
 };
 
-export default TodoList;
+export default React.memo(TodoList);

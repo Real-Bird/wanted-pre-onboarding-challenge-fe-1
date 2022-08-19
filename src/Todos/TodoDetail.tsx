@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useMatch, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { TodoForm } from "./TodoInsert";
 import { deleteTodo, getTodoById, updateTodo } from "../libs/todos";
@@ -28,15 +28,14 @@ const TodoDetail = () => {
       updateTodo(title, content, `${params?.params.id}`),
     {
       onSuccess: (data) => queryClient.invalidateQueries(["toDos"]),
-      onError: (err) => console.log(err, "something wrong"),
     }
   );
   const deleteMutation = useMutation((id: string) => deleteTodo(id), {
     onSuccess: (data) => queryClient.invalidateQueries(["toDos"]),
-    onError: (err) => console.log(err, "something wrong"),
   });
-  const { isLoading, data: toDo } = useQuery<IToDoById>(["toDoById"], () =>
-    getTodoById(`${params?.params.id}`)
+  const { isLoading, data: toDo } = useQuery<IToDoById>(
+    ["toDoById", params?.params.id],
+    () => getTodoById(params?.params.id ? params?.params.id : "")
   );
   const [toggleUpdating, setToggleUpdating] = useState(false);
   const { register, handleSubmit, reset } = useForm<TodoForm>();

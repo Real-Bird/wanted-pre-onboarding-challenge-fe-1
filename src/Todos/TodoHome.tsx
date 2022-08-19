@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import {
@@ -26,11 +27,7 @@ export interface TodosResponse {
 
 const TodosHome = () => {
   const [logout, setLogout] = useState(false);
-  const [token, setToken] = useState<string>("");
   const navigate = useNavigate();
-  useEffect(() => {
-    setToken(getToken("token"));
-  }, []);
   useEffect(() => {
     if (logout) navigate("/login");
   }, [logout]);
