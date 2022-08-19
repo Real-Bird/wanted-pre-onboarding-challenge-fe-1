@@ -2,8 +2,10 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import {
+  ConfirmOverview,
   Container,
   Title,
+  ToDoAlertBox,
   ToDoDetailOverview,
   ToDoListOverview,
   ValidBtn,
@@ -27,15 +29,17 @@ export interface TodosResponse {
 
 const TodosHome = () => {
   const [logout, setLogout] = useState(false);
+  const [toggleLogout, setToggleLogout] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     if (logout) navigate("/login");
   }, [logout]);
+  const onToggleLogout = () => {
+    setToggleLogout(true);
+  };
   const onLogout = () => {
-    if (window.confirm("로그아웃하시겠습니까?")) {
-      localStorage.removeItem("token");
-      setLogout(true);
-    }
+    localStorage.removeItem("token");
+    setLogout(true);
   };
   return (
     <Container>
@@ -43,7 +47,7 @@ const TodosHome = () => {
         <Title>Todo List</Title>
         <TodoList />
         <TodoInsert />
-        <ValidBtn onClick={onLogout}>Log out</ValidBtn>
+        <ValidBtn onClick={onToggleLogout}>Log out</ValidBtn>
       </ToDoListOverview>
       <ToDoDetailOverview>
         <Title>Todo Detail</Title>
@@ -51,6 +55,17 @@ const TodosHome = () => {
           <Route path=":id" element={<TodoDetail />} />
         </Routes>
       </ToDoDetailOverview>
+      {toggleLogout && (
+        <ConfirmOverview>
+          <ToDoAlertBox>
+            <span>로그아웃 하시겠습니까?</span>
+            <div>
+              <button onClick={onLogout}>O</button>
+              <button onClick={() => setToggleLogout(false)}>X</button>
+            </div>
+          </ToDoAlertBox>
+        </ConfirmOverview>
+      )}
     </Container>
   );
 };

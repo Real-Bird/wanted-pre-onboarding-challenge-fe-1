@@ -205,3 +205,41 @@ export const ErrorMessage = styled.span`
 export const TodoInsertWrapper = styled.div`
   width: 100%;
 `;
+
+export const ConfirmOverview = styled.div`
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+`;
+
+export const ToDoAlertBox = styled.div`
+  z-index: 11;
+  padding: 20px;
+  color: ${(props) => props.theme.accentColor};
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  div {
+    display: flex;
+    button {
+      margin-left: 15px;
+      color: ${(props) => props.theme.textColor};
+      font-weight: bold;
+      font-size: 22px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+      &:hover {
+        color: ${(props) => props.theme.accentColor};
+      }
+    }
+  }
+`;

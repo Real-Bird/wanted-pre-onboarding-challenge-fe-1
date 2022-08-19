@@ -12,6 +12,8 @@ import {
   Subtitle,
   ValidBtn,
   LabelBox,
+  ConfirmOverview,
+  ToDoAlertBox,
 } from "../components/todosStyled";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -38,20 +40,27 @@ const TodoDetail = () => {
     () => getTodoById(params?.params.id ? params?.params.id : "")
   );
   const [toggleUpdating, setToggleUpdating] = useState(false);
-  const { register, handleSubmit, reset } = useForm<TodoForm>();
+  const [toggleConfirm, setToggleConfirm] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const { register, handleSubmit, reset, getValues } = useForm<TodoForm>();
   const onValid = ({ title, content }: TodoForm) => {
     if (!title || !content) return;
-    if (window.confirm("수정하시겠습니까?")) {
+    if (isUpdating) {
       updateMutation.mutate({ title, content });
       reset();
       setToggleUpdating(false);
     }
   };
+  const onToggleConfirm = () => {
+    if (toggleUpdating && (!getValues("content") || !getValues("title")))
+      return;
+    setToggleConfirm(true);
+  };
+
+  const onIsUpdating = () => setIsUpdating(true);
   const onDeleteTodo = () => {
-    if (window.confirm("정말 지우시겠습니까?")) {
-      deleteMutation.mutate(`${params?.params.id}`);
-      navigate("/todo");
-    }
+    deleteMutation.mutate(`${params?.params.id}`);
+    navigate("/todo");
   };
   return (
     <DetailWrapper>
@@ -68,7 +77,11 @@ const TodoDetail = () => {
             <label htmlFor="content">CONTENT</label>
           </LabelBox>
           <div>
-            <ValidBtn toggleUpdating={true} type="submit">
+            <ValidBtn
+              onClick={onToggleConfirm}
+              toggleUpdating={true}
+              type="submit"
+            >
               Update
             </ValidBtn>
             <ValidBtn onClick={() => setToggleUpdating((prev) => !prev)}>
@@ -94,9 +107,26 @@ const TodoDetail = () => {
             <ValidBtn onClick={() => setToggleUpdating((prev) => !prev)}>
               Update
             </ValidBtn>
-            <ValidBtn onClick={onDeleteTodo}>Delete</ValidBtn>
+            <ValidBtn onClick={onToggleConfirm}>Delete</ValidBtn>
           </div>
         </FormBox>
+      )}
+      {toggleConfirm && (
+        <ConfirmOverview>
+          <ToDoAlertBox>
+            <span>
+              {toggleUpdating
+                ? "정말 수정하시겠습니까?"
+                : "정말 삭제하시겠습니까?"}
+            </span>
+            <div>
+              <button onClick={toggleUpdating ? onIsUpdating : onDeleteTodo}>
+                O
+              </button>
+              <button onClick={() => setToggleConfirm(false)}>X</button>
+            </div>
+          </ToDoAlertBox>
+        </ConfirmOverview>
       )}
     </DetailWrapper>
   );
