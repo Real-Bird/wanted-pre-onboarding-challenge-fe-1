@@ -18,7 +18,10 @@ export async function getLogin(
 
   localStorage.setItem("token", postLogin.token);
   return {
-    data: { message: postLogin.message, token: postLogin.token },
+    data: {
+      message: postLogin.message,
+      formType: toggleForm ? "create" : "login",
+    },
     ok: true,
   };
 }

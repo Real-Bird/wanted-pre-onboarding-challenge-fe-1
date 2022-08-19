@@ -19,32 +19,46 @@ interface FormProps {
 const LoginForm = () => {
   const [toggleForm, setToggleForm] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
-  const [errAlert, setErrAlert] = useState<string | null>();
+  const [statusAlert, setStatusAlert] = useState<string | null>();
+  const [isRed, setIsRed] = useState(true);
   const navigate = useNavigate();
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormProps>({ mode: "onChange" });
   const onValid = async ({ email, password }: FormProps) => {
     const { data, ok } = await getLogin(email, password, toggleForm);
     if (!ok) {
-      setIsLogged(ok);
-      setErrAlert(data.message);
+      setIsLogged(false);
+      setIsRed(true);
+      setStatusAlert(data.message);
+      return;
+    }
+    if (data.formType === "create") {
+      setStatusAlert(data.message);
+      setIsRed(false);
+      setToggleForm(false);
+      reset();
       return;
     }
     setIsLogged(ok);
+    reset();
   };
+  useEffect(() => {
+    setTimeout(() => setStatusAlert(null), 5000);
+  }, [statusAlert]);
   useEffect(() => {
     if (isLogged) navigate("/todo");
   }, [isLogged]);
   const onToggleForm = () => setToggleForm((prev) => !prev);
   return (
     <AuthOverview toggleForm={toggleForm}>
-      {errAlert && (
-        <AlertBox>
-          <span onClick={() => setErrAlert(null)}>x</span>
-          {errAlert}
+      {statusAlert && (
+        <AlertBox isRed={isRed}>
+          <span onClick={() => setStatusAlert(null)}>x</span>
+          {statusAlert}
         </AlertBox>
       )}
       <AuthTitle toggleForm={toggleForm}>

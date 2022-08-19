@@ -104,9 +104,9 @@ npm start
 
 #### 5-0-2. 셀프 피드백
 
-사전 과제에서 요구한 기능만 최소한으로 구현했다. 디렉토리는 나름대로 컴포넌트 역할에 따라 분류했다. 상태 관리나 함수 분류 등은 전혀 고려하지 않았다. [커밋](https://github.com/Real-Bird/wanted-pre-onboarding-challenge-fe-1/commit/0f9203cc3cfba9aed7021ae688d163c8f5c5a97c)
+사전 과제에서 요구한 기능만 최소한으로 구현했다. 디렉토리는 나름대로 컴포넌트 역할에 따라 분류했다. 상태 관리나 함수 분류 등은 전혀 고려하지 않았다. [#커밋](https://github.com/Real-Bird/wanted-pre-onboarding-challenge-fe-1/commit/0f9203cc3cfba9aed7021ae688d163c8f5c5a97c)
 
-가령, 모든 비동기 호출에서 `token`이 필요했는데, 상태관리를 전혀 몰랐던 나는 자연스럽게 `prop`을 상위 컴포넌트에서 하위 컴포넌트로 `drilling`했다. [커밋](https://github.com/Real-Bird/wanted-pre-onboarding-challenge-fe-1/commit/16b3b88dc890f93d5c2082bcb858a163c2ad0ddd)
+가령, 모든 비동기 호출에서 `token`이 필요했는데, 상태관리를 전혀 몰랐던 나는 자연스럽게 `prop`을 상위 컴포넌트에서 하위 컴포넌트로 `drilling`했다. [#커밋](https://github.com/Real-Bird/wanted-pre-onboarding-challenge-fe-1/commit/16b3b88dc890f93d5c2082bcb858a163c2ad0ddd)
 
 뭐가 문제인지 전혀 모르고, 과제를 빠르게 했다는 사실에 안도했다.
 
@@ -145,13 +145,13 @@ npm start
 
 #### 5-1-2. 셀프 피드백
 
-`typescript`로의 전환이 필요해 먼저 작업했다. 타입 단언을 지양하고, 최대한 타입 추론과 `interface`를 활용하려고 했다. [커밋](https://github.com/Real-Bird/wanted-pre-onboarding-challenge-fe-1/commit/6974f69c79e26d6c215e4c7cc4dbdeea2cffb808)
+`typescript`로의 전환이 필요해 먼저 작업했다. 타입 단언을 지양하고, 최대한 타입 추론과 `interface`를 활용하려고 했다. [#커밋](https://github.com/Real-Bird/wanted-pre-onboarding-challenge-fe-1/commit/6974f69c79e26d6c215e4c7cc4dbdeea2cffb808)
 
 컴포넌트 내에서 호출하던 `fetch`를 역할에 따라 `libs` 디렉토리에 분류해 저장했다. `todos.ts`에는 `To Do List`와 관련된 함수들(ex. `getTodos`, `setTodos` 등)이, `users.ts`에는 `Login/Signup`과 관련된 함수들(ex. `getToken`, `getLogin` 등)이 모여 있다.
 
 `추상화`를 통한 `명령형 함수`를 구성하고 싶어 기능에 따라 나눴지만, 개념을 이해하지 못해 단순한 분류에 그쳤다. 그 때문에 여전히 `props drilling`의 한계에서 벗어나지 못했다.
 
-`styled components`로 구성한 컴포넌트를 `components` 디렉토리로 분류해 재사용성을 높였다. [커밋](https://github.com/Real-Bird/wanted-pre-onboarding-challenge-fe-1/commit/6262bbdf73069af8665af5a54ea5103c9c4a5686)
+`styled components`로 구성한 컴포넌트를 `components` 디렉토리로 분류해 재사용성을 높였다. [#커밋](https://github.com/Real-Bird/wanted-pre-onboarding-challenge-fe-1/commit/6262bbdf73069af8665af5a54ea5103c9c4a5686)
 
 ### 5-2. 강의 2회 차 과제
 

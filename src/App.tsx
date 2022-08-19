@@ -12,7 +12,7 @@ function App() {
       <ThemeProvider theme={lightTheme}>
         <GlobalStyle />
         <AppRouter />
-        <ReactQueryDevtools />
+        {/* <ReactQueryDevtools /> */}
       </ThemeProvider>
     </React.Fragment>
   );

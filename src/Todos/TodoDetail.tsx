@@ -29,7 +29,10 @@ const TodoDetail = () => {
     ({ title, content }: TodoForm) =>
       updateTodo(title, content, `${params?.params.id}`),
     {
-      onSuccess: (data) => queryClient.invalidateQueries(["toDos"]),
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(["toDos"]);
+        queryClient.invalidateQueries(["toDoById"]);
+      },
     }
   );
   const deleteMutation = useMutation((id: string) => deleteTodo(id), {
@@ -41,23 +44,17 @@ const TodoDetail = () => {
   );
   const [toggleUpdating, setToggleUpdating] = useState(false);
   const [toggleConfirm, setToggleConfirm] = useState(false);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const { register, handleSubmit, reset, getValues } = useForm<TodoForm>();
+  const { register, handleSubmit, reset } = useForm<TodoForm>();
   const onValid = ({ title, content }: TodoForm) => {
     if (!title || !content) return;
-    if (isUpdating) {
-      updateMutation.mutate({ title, content });
-      reset();
-      setToggleUpdating(false);
-    }
+    updateMutation.mutate({ title, content });
+    reset();
+    setToggleUpdating(false);
   };
   const onToggleConfirm = () => {
-    if (toggleUpdating && (!getValues("content") || !getValues("title")))
-      return;
     setToggleConfirm(true);
   };
 
-  const onIsUpdating = () => setIsUpdating(true);
   const onDeleteTodo = () => {
     deleteMutation.mutate(`${params?.params.id}`);
     navigate("/todo");
@@ -67,21 +64,25 @@ const TodoDetail = () => {
       {toggleUpdating ? (
         <FormBox onSubmit={handleSubmit(onValid)}>
           <LabelBox>
-            <input {...register("title")} id="title" type="text" />
+            <input
+              {...register("title", { value: toDo?.data.title })}
+              id="title"
+              type="text"
+            />
             <span className="bar"></span>
             <label htmlFor="title">TITLE</label>
           </LabelBox>
           <LabelBox>
-            <input {...register("content")} id="content" type="text" />
+            <input
+              {...register("content", { value: toDo?.data.content })}
+              id="content"
+              type="text"
+            />
             <span className="bar"></span>
             <label htmlFor="content">CONTENT</label>
           </LabelBox>
           <div>
-            <ValidBtn
-              onClick={onToggleConfirm}
-              toggleUpdating={true}
-              type="submit"
-            >
+            <ValidBtn toggleUpdating={true} type="submit">
               Update
             </ValidBtn>
             <ValidBtn onClick={() => setToggleUpdating((prev) => !prev)}>
@@ -114,15 +115,9 @@ const TodoDetail = () => {
       {toggleConfirm && (
         <ConfirmOverview>
           <ToDoAlertBox>
-            <span>
-              {toggleUpdating
-                ? "정말 수정하시겠습니까?"
-                : "정말 삭제하시겠습니까?"}
-            </span>
+            <span>"정말 삭제하시겠습니까?"</span>
             <div>
-              <button onClick={toggleUpdating ? onIsUpdating : onDeleteTodo}>
-                O
-              </button>
+              <button onClick={onDeleteTodo}>O</button>
               <button onClick={() => setToggleConfirm(false)}>X</button>
             </div>
           </ToDoAlertBox>

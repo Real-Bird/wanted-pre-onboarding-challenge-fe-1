@@ -61,9 +61,9 @@ const AlertOpacity = keyframes`
   }
 `;
 
-export const AlertBox = styled.div`
+export const AlertBox = styled.div<{ isRed: boolean }>`
   padding: 20px;
-  background-color: #f44336;
+  background-color: ${(props) => (props.isRed ? "#f44336" : "#2ecc71")};
   color: white;
   position: absolute;
   top: 10px;
